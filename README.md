@@ -68,7 +68,7 @@ install guide.
 In Claude Code:
 
 ```
-/plugin marketplace add <your-github-username>/cloud-risk-triage-suite
+/plugin marketplace add <your-github-username>/cloud-risk-triage
 /plugin install cloud-risk-triage-agent@cloud-risk-triage-suite
 /plugin install cloud-risk-triage-agent-api@cloud-risk-triage-suite
 ```
