@@ -18,7 +18,8 @@ even when it returns no rows (mark "EMPTY — no findings").**
 
 ## Prerequisites (the run fails without these)
 
-- `TENABLE_CS_API_URL` — region GraphQL endpoint ending in `/graphql`.
+- `TENABLE_CS_API_URL` — Tenable Cloud Security GraphQL endpoint
+  (commercial: `https://app.tenable.com/api/graph`; other regions/platforms may differ).
 - `TENABLE_CS_API_TOKEN` — API token, sent as `Authorization: Bearer <token>`.
 - `curl` and `jq` available.
 

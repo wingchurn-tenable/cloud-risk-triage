@@ -3,8 +3,9 @@
 # Reads a GraphQL query from stdin and POSTs it to the /graphql endpoint.
 #
 # Required environment variables:
-#   TENABLE_CS_API_URL    Region GraphQL endpoint, e.g. https://<region>.app.ermetic.com/graphql
-#                         (confirm your region's host in the Tenable Cloud Security console / docs)
+#   TENABLE_CS_API_URL    Tenable Cloud Security GraphQL endpoint.
+#                         Default/commercial: https://app.tenable.com/api/graph
+#                         (other regions/platforms may differ — confirm in the console / docs)
 #   TENABLE_CS_API_TOKEN  API token generated in Tenable Cloud Security (used as a Bearer token)
 #
 # Usage:
@@ -12,7 +13,7 @@
 #   ./tcs_graphql.sh < query.graphql | jq '.data'
 set -euo pipefail
 
-: "${TENABLE_CS_API_URL:?Set TENABLE_CS_API_URL to your region GraphQL endpoint (…/graphql)}"
+: "${TENABLE_CS_API_URL:?Set TENABLE_CS_API_URL to the GraphQL endpoint, e.g. https://app.tenable.com/api/graph}"
 : "${TENABLE_CS_API_TOKEN:?Set TENABLE_CS_API_TOKEN to your Tenable Cloud Security API token}"
 
 QUERY="$(cat)"

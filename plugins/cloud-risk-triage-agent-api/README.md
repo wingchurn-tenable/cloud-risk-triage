@@ -47,15 +47,16 @@ MCP edition.
 
 - `curl` and `jq` available in the shell.
 - Two environment variables:
-  - `TENABLE_CS_API_URL` — your region's GraphQL endpoint, ending in `/graphql`
-    (confirm the host for your region in the Tenable Cloud Security console / docs).
+  - `TENABLE_CS_API_URL` — the Tenable Cloud Security GraphQL endpoint. Commercial
+    platform: `https://app.tenable.com/api/graph` (other regions/platforms may differ —
+    confirm in the Tenable Cloud Security console / docs).
   - `TENABLE_CS_API_TOKEN` — an API token from Tenable Cloud Security, sent as
     `Authorization: Bearer <token>`.
 
 ## Setup
 
 ```bash
-export TENABLE_CS_API_URL="https://<your-region>.app.ermetic.com/graphql"
+export TENABLE_CS_API_URL="https://app.tenable.com/api/graph"
 export TENABLE_CS_API_TOKEN="••••••••"
 chmod +x scripts/tcs_graphql.sh
 

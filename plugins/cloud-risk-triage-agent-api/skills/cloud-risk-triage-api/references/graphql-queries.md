@@ -1,6 +1,7 @@
 # Tenable Cloud Security GraphQL — Reference Queries
 
-All queries are POSTed to `$TENABLE_CS_API_URL` (the `/graphql` endpoint) with
+All queries are POSTed to `$TENABLE_CS_API_URL` (the Tenable Cloud Security GraphQL
+endpoint, e.g. `https://app.tenable.com/api/graph`) with
 `Authorization: Bearer $TENABLE_CS_API_TOKEN`. Pipe them through the helper:
 
 ```bash
