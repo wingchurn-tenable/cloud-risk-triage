@@ -25,6 +25,19 @@ read.
 6. **Unused credentials** (inactive IAM users with an enabled access key)
 7. **Unused security groups** (no attached resources)
 
+**Discover AI risk**
+
+- **Step 1 — Discover AI assets** in your inventory (Bedrock, SageMaker, Azure
+  Cognitive Services/OpenAI, GCP Vertex, etc.)
+- **Step 2 — Correlate AI resources to training data**: for fine-tuned/custom models,
+  show the training-input S3 bucket and the output bucket
+
+**Toxic combination**
+
+- **Public workload + critical (VPR) vulnerability + high-privilege permission** — the
+  internet-exposed, exploitable, over-privileged workloads that should be patched and
+  locked down first
+
 ## Requirements
 
 - **Claude Cowork** (or Claude Code).

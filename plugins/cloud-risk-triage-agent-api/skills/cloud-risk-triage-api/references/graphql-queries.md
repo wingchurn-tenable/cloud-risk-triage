@@ -137,4 +137,40 @@ the deliverable — there is no separate highest-risk ranking in this edition:
 
 Checks 1–4 are "Address critical findings"; checks 5–7 are "Address low-hanging fruits".
 
+## Discover AI risk
+
+**Step 1 — Discover AI assets.** Use the `Entities` query and keep AI resource types by
+`__typename` (Bedrock agents/custom models, SageMaker, Azure Cognitive Services/OpenAI,
+GCP Vertex notebooks, etc.):
+
+```graphql
+query($after: String) {
+  Entities(first: 100, after: $after) {
+    nodes { Id Name Type: __typename AccountId Provider Region }
+    pageInfo { hasNextPage endCursor }
+  }
+}
+```
+
+Filter the returned nodes client-side to AI `__typename`s.
+
+**Step 2 — Correlate AI resources to training data.** The public schema may not expose
+the Bedrock custom-model training/output bucket lineage that the MCP edition reads from
+`AwsBedrockCustomModel` (`InputTrainingBucket`, `OutputBucket`). Introspect the model
+type and, if those fields aren't present, state so and fall back to the model's related
+data resources. Flag any AI data bucket that is public or holds sensitive data.
+
+## Toxic combination — public workload + critical-VPR vuln + privileged
+
+The MCP edition expresses this with `IVirtualMachine` (network exposure type + scope,
+`VirtualMachineIdentityPermissionActionSeverity`, and a nested
+`VulnerabilityVprSeverity = Critical`). The public GraphQL schema may not expose all
+three dimensions on `Entities`. Best-effort:
+
+- Look for a built-in toxic-combination / attack-path **Finding** policy (Policy.Name
+  contains "public" + "vulnerab" + "privileg") and list its resources.
+- Otherwise, query `Entities` for VM/compute types, keep the internet-exposed ones, and
+  cross-reference each against vulnerability findings (Critical) and privilege/permission
+  findings. State explicitly any of the three dimensions the public schema can't confirm.
+
 Always output each section even if the match set is empty (state "EMPTY — no findings").

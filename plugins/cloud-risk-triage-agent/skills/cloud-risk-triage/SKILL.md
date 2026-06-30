@@ -17,8 +17,10 @@ entirely from live Tenable Cloud Security data. Never fabricate data — every f
 come from a query result. **Always output every check section, even when it returns no
 rows (mark it "EMPTY — no findings").**
 
-The report has two sections: **Address critical findings** (Checks 1–4) and **Address
-low-hanging fruits** (Checks 5–7).
+The report has four sections: **Address critical findings** (Checks 1–4), **Address
+low-hanging fruits** (Checks 5–7), **Discover AI risk** (AI asset inventory +
+model-to-training-data correlation), and **Toxic combination** (public + critical-VPR-vuln
++ privileged workloads).
 
 ## Prerequisites
 
@@ -84,6 +86,46 @@ account, console-password-enabled.
 `UdmQueryRelationRule` with `not: true` and an empty inner rule group. Also select
 `AwsEc2SecurityGroupDefaultSecurityGroup`. Columns: SG name, account, region, default-SG.
 
+#### Section C — Discover AI risk
+
+**Step 1 — Discover AI assets in your inventory.** Query `IAiResource` (no filter) to
+list all AI assets across providers (Bedrock agents & custom models, SageMaker
+notebooks, Azure Cognitive Services / OpenAI accounts & deployments, GCP Vertex
+notebooks, etc.). Get the count. Columns: AI asset, type (`EntityTypeName`), account,
+region.
+
+**Step 2 — Correlate AI resources to training data.** For fine-tuned / custom models,
+trace the data lineage. Query `AwsBedrockCustomModel` and select
+`AwsBedrockCustomModelCustomizationType`, `AwsBedrockCustomModelSourceModelArn`,
+`AwsBedrockCustomModelInputTrainingBucket` (**Training Input Data** — the S3 bucket used
+to fine-tune the model), `AwsBedrockCustomModelInputValidationBuckets`, and
+`AwsBedrockCustomModelOutputBucket` (**Output Data** — the bucket storing model outputs).
+For each model, display the model and its correlated training-input and output buckets.
+Flag when input and output share the same bucket or when a referenced bucket is publicly
+exposed / holds sensitive data (cross-reference Checks 3 and 4). Note: other AI asset
+types don't expose training-data lineage via this object — review their attached data
+stores and IAM separately.
+
+#### Section D — Toxic combination
+
+**Public workload with critical vulnerability and high-privilege permission.** Query
+`IVirtualMachine` requiring all three at once:
+- **Public** — `EntityNetworkAccessType In ["ExternalDirect","ExternalIndirect"]` AND
+  `EntityNetworkAccessScope In ["Wide","All"]`.
+- **High privilege ("Privileged")** — `VirtualMachineIdentityPermissionActionSeverity In
+  ["Critical","High"]` (UDM equivalent of the Privileged workload label).
+- **Critical vulnerability (VPR)** — nested relation rule:
+  `EntityPackageVulnerabilityInstances` → `PackageVulnerabilityInstanceVulnerability` →
+  `VulnerabilityVprSeverity In ["Critical"]`.
+
+Get the count. Also select `NetworkDynamicAnalysisResourceNetworkEndpoints`. Columns:
+workload, type, account, exposure (`EntityNetworkAccessType`), **network exposure scope**
+(`EntityNetworkAccessScope` — map Wide/All → "Wide", Restricted → "Specific IP"),
+privilege severity, and **network endpoint identified** (Yes if
+`NetworkDynamicAnalysisResourceNetworkEndpoints` is non-empty, else No). This is the
+highest-priority cleanup — call it out first in the remediation order (patch the
+Critical-VPR vuln, cut public exposure, right-size the workload identity).
+
 ### 3. Remediation order
 Provide a prioritized order: critical findings first (identity clean-up → rotate
 network-reachable secrets → lock down public regulated-data stores → root-MFA
@@ -92,10 +134,13 @@ bulk-deprovision inactive identities).
 
 ### 4. Deliver
 Write a markdown report named `cloud-risk-triage-YYYY-MM-DD.md` to the user's working
-folder with: a two-part Summary table (critical findings; low-hanging fruits), a
-`# Address critical findings` section (Checks 1–4) and a `# Address low-hanging fruits`
+folder with: a Summary (critical findings; low-hanging fruits; AI risk), a
+`# Address critical findings` section (Checks 1–4), a `# Address low-hanging fruits`
 section (Checks 5–7) — each check always present, EMPTY if no rows, with the requested
-flag columns — a Remediation order, and Verification notes (exact filters + counts).
+flag columns — a `# Discover AI Risk` section (Step 1 AI inventory + Step 2 model→data
+correlation), a `# Toxic Combination` section (public + critical-VPR-vuln + privileged
+workloads), a Remediation order (toxic combinations first), and Verification notes
+(exact filters + counts).
 Present the file and give a 2–3 sentence chat summary of the results and whether they
 changed from a prior run.
 

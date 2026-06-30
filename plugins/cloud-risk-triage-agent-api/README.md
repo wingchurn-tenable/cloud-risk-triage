@@ -24,8 +24,18 @@ token in a script/CI context.
 6. **Unused credentials**
 7. **Unused security groups**
 
-Under the public API these are mapped onto **finding policy categories** rather than
-UDM attributes (see below).
+**Discover AI risk**
+
+- Step 1 — Discover AI assets in your inventory
+- Step 2 — Correlate AI resources to training data
+
+**Toxic combination**
+
+- Public workload + critical (VPR) vulnerability + high-privilege permission
+
+Under the public API the checks are mapped onto **finding policy categories**
+rather than UDM attributes, and the AI training-data lineage may not be exposed in the
+public schema (the MCP edition reads it from `AwsBedrockCustomModel`); see below.
 
 ## How it differs from the MCP edition (read this first)
 

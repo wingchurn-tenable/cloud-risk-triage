@@ -71,6 +71,31 @@ Match findings (and entities) to each check, grouped into two report sections.
 For each check, report the count and a table; if the match set is empty, output the
 section and state "EMPTY — no findings."
 
+**Section C — Discover AI risk**
+- **Step 1 — Discover AI assets.** Query `Entities` and keep AI resource types
+  (`__typename` containing Bedrock/SageMaker/CognitiveServices/Notebook/Vertex, etc.).
+  List asset, type, account, region.
+- **Step 2 — Correlate AI resources to training data.** The public GraphQL schema may
+  not expose the Bedrock custom-model training/output bucket lineage that the MCP
+  edition reads from `AwsBedrockCustomModel`. Attempt it via the AI/inventory query and
+  introspection; if the lineage fields aren't available, state so explicitly and fall
+  back to listing each model's attached/related data resources. Flag any AI data bucket
+  that is publicly exposed or holds sensitive data (cross-reference Checks 3 and 4).
+
+**Section D — Toxic combination**
+- **Public workload + critical (VPR) vulnerability + high privilege.** Identify
+  workloads that are internet-exposed AND carry a Critical-VPR vulnerability AND are
+  privileged. Via the public API: query `Findings` for a toxic-combination / attack-path
+  policy if present (policy name contains "public" + "vulnerab" + "privileg"), and/or
+  query `Entities` for VM/compute types that are network-exposed and cross-reference
+  their vulnerability and privilege findings. The MCP edition expresses this precisely
+  with `IVirtualMachine` (network exposure + scope + `VirtualMachineIdentityPermissionActionSeverity`
+  + nested `VulnerabilityVprSeverity = Critical`); the public schema may not expose all
+  three dimensions, so state any dimension you cannot evaluate. This is the highest-priority
+  finding — list it first in the report. Output columns must include **network exposure
+  scope** (wide vs specific IP) and **network endpoint identified** (Yes/No) where the
+  schema exposes them.
+
 ### 4. Remediation order
 Short prioritized order across the four checks.
 

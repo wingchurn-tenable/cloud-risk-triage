@@ -5,21 +5,21 @@
     "email": "leongwc@gmail.com"
   },
   "metadata": {
-    "description": "Autonomous cloud security posture-sweep agents for Tenable Cloud Security — MCP edition and API-token (GraphQL) edition. Address critical findings (root MFA, third-party sensitive access, public exposure, exposed secrets) and low-hanging fruits (inactive identities, unused credentials, unused security groups).",
-    "version": "1.2.0"
+    "description": "Autonomous cloud security posture-sweep agents for Tenable Cloud Security — MCP edition and API-token (GraphQL) edition. Critical findings, low-hanging fruits, discover AI risk, and toxic combination (public + critical-VPR-vuln + privileged workloads).",
+    "version": "1.4.1"
   },
   "plugins": [
     {
       "name": "cloud-risk-triage-agent",
       "source": "./plugins/cloud-risk-triage-agent",
-      "description": "MCP edition. Seven posture checks in two sections — Address critical findings (root MFA, third-party sensitive-data access, public exposure, exposed secrets) and Address low-hanging fruits (inactive identities, unused credentials, unused security groups) — written to a SOC-ready report. Requires the Tenable Cloud Security (tcs) MCP connector.",
-      "keywords": ["cloud-security", "tenable", "posture", "cspm", "soc", "triage", "cnapp"]
+      "description": "MCP edition. Four sections — Address critical findings (root MFA, third-party sensitive-data access, public exposure, exposed secrets), Address low-hanging fruits (inactive identities, unused credentials, unused security groups), Discover AI risk (AI asset inventory + model-to-training-data correlation), and Toxic combination (public + critical-VPR-vuln + privileged workloads) — written to a SOC-ready report. Requires the Tenable Cloud Security (tcs) MCP connector.",
+      "keywords": ["cloud-security", "tenable", "posture", "cspm", "ai-spm", "soc", "cnapp"]
     },
     {
       "name": "cloud-risk-triage-agent-api",
       "source": "./plugins/cloud-risk-triage-agent-api",
-      "description": "API-token edition (no MCP). Uses the Tenable Cloud Security public GraphQL API with a Bearer token to run the same seven posture checks (critical findings + low-hanging fruits), mapped to Findings, and write a SOC-ready report.",
-      "keywords": ["cloud-security", "tenable", "graphql", "api-token", "posture", "soc", "cnapp"]
+      "description": "API-token edition (no MCP). Uses the Tenable Cloud Security public GraphQL API with a Bearer token to run the same checks (critical findings + low-hanging fruits + discover AI risk + toxic combination), mapped to Findings/Entities, and write a SOC-ready report.",
+      "keywords": ["cloud-security", "tenable", "graphql", "api-token", "posture", "ai-spm", "cnapp"]
     }
   ]
 }

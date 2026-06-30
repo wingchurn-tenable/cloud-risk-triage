@@ -18,6 +18,15 @@ returns nothing (marked **EMPTY**).
 6. Unused credentials
 7. Unused security groups
 
+**Discover AI risk:**
+
+- Step 1 — Discover AI assets in your inventory
+- Step 2 — Correlate AI resources to training data (training-input + output buckets)
+
+**Toxic combination:**
+
+- Public workload + critical (VPR) vulnerability + high-privilege permission
+
 This repo ships **two editions** of the same agent. Install whichever matches how you
 connect to Tenable Cloud Security.
 
@@ -116,8 +125,18 @@ order, and verification notes. Every check section is **always output, marked
 6. Unused credentials
 7. Unused security groups
 
-In the API edition these are mapped onto finding policy categories rather than UDM
-attributes (see that plugin's README for the differences).
+**Discover AI risk**
+
+- Step 1 — Discover AI assets in your inventory
+- Step 2 — Correlate AI resources to training data (training-input + output buckets)
+
+**Toxic combination**
+
+- Public workload + critical (VPR) vulnerability + high-privilege permission
+
+In the API edition the checks are mapped onto finding policy categories rather than UDM
+attributes, and some dimensions (AI training-data lineage, the full toxic-combination
+triple) may not be exposed in the public schema (see that plugin's README).
 
 ## Contributing / building
 
