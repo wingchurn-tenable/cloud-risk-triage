@@ -118,13 +118,22 @@ stores and IAM separately.
   `EntityPackageVulnerabilityInstances` → `PackageVulnerabilityInstanceVulnerability` →
   `VulnerabilityVprSeverity In ["Critical"]`.
 
-Get the count. Also select `NetworkDynamicAnalysisResourceNetworkEndpoints`. Columns:
-workload, type, account, exposure (`EntityNetworkAccessType`), **network exposure scope**
-(`EntityNetworkAccessScope` — map Wide/All → "Wide", Restricted → "Specific IP"),
-privilege severity, and **network endpoint identified** (Yes if
-`NetworkDynamicAnalysisResourceNetworkEndpoints` is non-empty, else No). This is the
-highest-priority cleanup — call it out first in the remediation order (patch the
-Critical-VPR vuln, cut public exposure, right-size the workload identity).
+Get the count. Columns: workload, type, account, exposure (`EntityNetworkAccessType`),
+**network exposure scope** (`EntityNetworkAccessScope` — map Wide/All → "Wide",
+Restricted → "Specific IP"), privilege severity, and **network endpoint identified**.
+
+**Reading the network-endpoint flag (important):** the
+`NetworkDynamicAnalysisResourceNetworkEndpoints` relation **returns null if selected as a
+plain property** — it must be read via a **join** or a relation rule. To flag per row,
+add a Left `UdmQueryJoin` on `NetworkDynamicAnalysisResourceNetworkEndpoints` and select
+`NetworkEndpointHost` / `NetworkEndpointPort` from the join (a workload with a non-null
+host = Yes, and show e.g. `3.15.227.235:22/TCP`). For the subset **count**, add a
+`UdmQueryRelationRule` on `NetworkDynamicAnalysisResourceNetworkEndpoints` (empty inner
+rule group, `not: false` = "has at least one endpoint") to the toxic rule group.
+
+This is the highest-priority cleanup — call it out first in the remediation order (patch
+the Critical-VPR vuln, cut public exposure, right-size the workload identity), and within
+it prioritize the workloads that have a confirmed reachable endpoint.
 
 ### 3. Remediation order
 Provide a prioritized order: critical findings first (identity clean-up → rotate

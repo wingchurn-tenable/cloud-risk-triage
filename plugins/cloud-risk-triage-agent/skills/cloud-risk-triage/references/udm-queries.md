@@ -260,7 +260,7 @@ related S3 bucket references directly (no Join needed).
 ```json
 {
   "typeName": "UdmQuery", "id": "e2000000-0000-0000-0000-000000000001", "objectTypeName": "IVirtualMachine",
-  "collapsed": false, "objectResultHidden": false, "groupProperties": null, "timeZoneId": null, "joins": [],
+  "collapsed": false, "objectResultHidden": false, "groupProperties": null, "timeZoneId": null,
   "properties": [
     {"identifier": "EntityName", "queryId": "e2000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
     {"identifier": "EntityTypeName", "queryId": "e2000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
@@ -269,7 +269,12 @@ related S3 bucket references directly (no Join needed).
     {"identifier": "EntityNetworkAccessType", "queryId": "e2000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
     {"identifier": "EntityNetworkAccessScope", "queryId": "e2000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
     {"identifier": "VirtualMachineIdentityPermissionActionSeverity", "queryId": "e2000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
-    {"identifier": "NetworkDynamicAnalysisResourceNetworkEndpoints", "queryId": "e2000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null}
+    {"identifier": "NetworkEndpointHost", "queryId": "e2000000-0000-0000-0000-0000000000aa", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "NetworkEndpointPort", "queryId": "e2000000-0000-0000-0000-0000000000aa", "sort": null, "startOfWeek": null, "transform": null}
+  ],
+  "joins": [
+    {"typeName": "UdmQueryJoin", "id": "e2000000-0000-0000-0000-0000000000aa", "collapsed": false, "objectResultHidden": false, "propertyIdentifier": "NetworkDynamicAnalysisResourceNetworkEndpoints", "type": "Left", "joins": [],
+      "ruleGroup": {"typeName": "UdmQueryRuleGroup", "id": "e2000000-0000-0000-0000-0000000000ab", "collapsed": false, "ignored": false, "not": false, "name": "", "operator": "And", "rules": []}}
   ],
   "ruleGroup": {"typeName": "UdmQueryRuleGroup", "id": "e2000000-0000-0000-0000-000000000002", "collapsed": false, "ignored": false, "not": false, "name": "", "operator": "And",
     "rules": [
@@ -291,8 +296,13 @@ related S3 bucket references directly (no Join needed).
 - Public = `EntityNetworkAccessType` (Network Exposure) + `EntityNetworkAccessScope`
   (None/Restricted/Wide/All — use Wide/All).
 - Output columns include **network exposure scope** (`EntityNetworkAccessScope`: Wide/All
-  → "Wide", Restricted → "Specific IP") and **network endpoint identified**
-  (`NetworkDynamicAnalysisResourceNetworkEndpoints` non-empty → Yes, else No).
+  → "Wide", Restricted → "Specific IP") and **network endpoint identified**.
+- The endpoint flag is read via the **Left join** above (select `NetworkEndpointHost` /
+  `NetworkEndpointPort`; non-null host → Yes, e.g. `3.15.227.235:22/TCP`). A plain
+  property select of `NetworkDynamicAnalysisResourceNetworkEndpoints` returns null even
+  when endpoints exist. For the subset **count**, add a `UdmQueryRelationRule` on
+  `NetworkDynamicAnalysisResourceNetworkEndpoints` (empty inner rule group, `not: false`)
+  to the rule group.
 - Privileged = `VirtualMachineIdentityPermissionActionSeverity` (Critical/High).
 - Critical vuln = `Vulnerability.VulnerabilityVprSeverity = Critical` (VPR, not CVSS),
   reached via the nested `EntityPackageVulnerabilityInstances` →

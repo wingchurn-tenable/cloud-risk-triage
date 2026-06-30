@@ -1,6 +1,6 @@
 {
   "name": "cloud-risk-triage-agent",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Autonomous cloud security posture sweep for Tenable Cloud Security. Four sections: Address critical findings (root MFA, third-party sensitive-data access, public exposure, exposed secrets), Address low-hanging fruits (inactive identities, unused credentials, unused security groups), Discover AI risk (AI asset inventory + model-to-training-data correlation), and Toxic combination (public + critical-VPR-vuln + privileged workloads). Writes a SOC-ready report; always lists every check.",
   "author": {
     "name": "Wing",

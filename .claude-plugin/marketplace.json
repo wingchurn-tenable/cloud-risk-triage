@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Autonomous cloud security posture-sweep agents for Tenable Cloud Security — MCP edition and API-token (GraphQL) edition. Critical findings, low-hanging fruits, discover AI risk, and toxic combination (public + critical-VPR-vuln + privileged workloads).",
-    "version": "1.4.1"
+    "version": "1.4.2"
   },
   "plugins": [
     {

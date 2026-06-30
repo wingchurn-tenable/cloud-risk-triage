@@ -1,6 +1,6 @@
 {
   "name": "cloud-risk-triage-agent-api",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Autonomous cloud security posture sweep for Tenable Cloud Security via the public GraphQL API with a Bearer API token (no MCP connection). Four sections: Address critical findings, Address low-hanging fruits, Discover AI risk, and Toxic combination (public + critical-VPR-vuln + privileged workloads), mapped to Findings/Entities. Always lists every check, marking empty results.",
   "author": {
     "name": "Wing",
