@@ -8,7 +8,9 @@ fabricated. Every check is always reported, even when it returns nothing (marked
 Built for cloud security architects and SOC analysts who want a fast daily posture
 read.
 
-## The four checks
+## The checks
+
+**Address critical findings**
 
 1. **AWS root users without MFA**
 2. **Third-party identities with access to sensitive data** (vendor / external / guest
@@ -16,6 +18,12 @@ read.
 3. **Publicly exposed resources** — with a flag for those that have a network endpoint
    identified
 4. **Exposed secrets** — with a flag for those on a network-reachable resource
+
+**Address low-hanging fruits**
+
+5. **Inactive identities**
+6. **Unused credentials** (inactive IAM users with an enabled access key)
+7. **Unused security groups** (no attached resources)
 
 ## Requirements
 

@@ -9,12 +9,20 @@ This is the standalone sibling of `cloud-risk-triage-agent` (which runs through 
 `tcs` MCP connector). Pick this edition when you'd rather authenticate with an API
 token in a script/CI context.
 
-## The four checks
+## The checks
+
+**Address critical findings**
 
 1. **AWS root users without MFA**
 2. **Third-party identities with access to sensitive data**
 3. **Publicly exposed resources** (flag: network endpoint identified)
 4. **Exposed secrets** (flag: network-reachable resource)
+
+**Address low-hanging fruits**
+
+5. **Inactive identities**
+6. **Unused credentials**
+7. **Unused security groups**
 
 Under the public API these are mapped onto **finding policy categories** rather than
 UDM attributes (see below).

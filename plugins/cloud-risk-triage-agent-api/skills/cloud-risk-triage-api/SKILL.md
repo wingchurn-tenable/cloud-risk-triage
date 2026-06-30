@@ -49,9 +49,10 @@ Query `Findings(filter: { Statuses: [Open] })`, paginating with `first`/`after`.
 Select Id, AccountId, AccountName, Provider, Severity, Status, Policy{Name,Category},
 Resources{Id,Name}, OpenTime, Description, Remediation{Console{Steps}}.
 
-### 3. Evaluate the four checks (always list each; EMPTY if none)
-Match findings (and entities) to each check:
+### 3. Evaluate the checks (always list each; EMPTY if none)
+Match findings (and entities) to each check, grouped into two report sections.
 
+**Section A — Address critical findings**
 1. **AWS root users without MFA** — policy name/category contains "root" + "MFA".
 2. **Third-party identities with sensitive-data access** — policy concerns
    vendor/external/guest identities AND sensitive data (PII/PHI/PCI/secret).
@@ -59,6 +60,12 @@ Match findings (and entities) to each check:
    "internet"; flag entries whose resource is internet-reachable where indicated.
 4. **Exposed secrets** — policy contains "secret"/"exposed secret"; flag entries on
    network-reachable resources where indicated.
+
+**Section B — Address low-hanging fruits**
+5. **Inactive identities** — policy contains "inactive"/"unused" + identity/user/role.
+6. **Unused credentials** — policy contains "unused"/"inactive" + "access key"/
+   "credential"/"password".
+7. **Unused security groups** — policy contains "unused"/"unattached" + "security group".
 
 For each check, report the count and a table; if the match set is empty, output the
 section and state "EMPTY — no findings."

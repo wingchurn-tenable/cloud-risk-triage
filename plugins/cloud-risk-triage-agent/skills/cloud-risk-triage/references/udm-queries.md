@@ -132,6 +132,77 @@ does not expose `NetworkDynamicAnalysisResourceNetworkEndpoints`.)
 
 ---
 
+## Check 5 — Inactive identities
+
+Total: `udm_get_query_results_count` on `IIdentity` with rule
+`PrincipalInactive Equals true`. List (`skip`/`take`, page as needed):
+
+```json
+{
+  "typeName": "UdmQuery", "id": "a0000000-0000-0000-0000-000000000001", "objectTypeName": "IIdentity",
+  "collapsed": false, "objectResultHidden": false, "groupProperties": null, "timeZoneId": null, "joins": [],
+  "properties": [
+    {"identifier": "EntityName", "queryId": "a0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "EntityTypeName", "queryId": "a0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "EntityTenant", "queryId": "a0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null}
+  ],
+  "ruleGroup": {"typeName": "UdmQueryRuleGroup", "id": "a0000000-0000-0000-0000-000000000002", "collapsed": false, "ignored": false, "not": false, "name": "", "operator": "And",
+    "rules": [{"typeName": "UdmQueryRule", "id": "a0000000-0000-0000-0000-000000000003", "ignored": false, "not": false, "operator": "Equals", "propertyIdentifier": "PrincipalInactive", "values": [true]}]}}
+```
+
+The result is usually large and dominated by directory users — prioritize inactive
+identities that are also privileged or carry sensitive-data access (cross-ref Check 2).
+
+## Check 6 — Unused credentials
+
+`AwsIamUser` that are inactive yet still have an enabled access key. Total via
+`udm_get_query_results_count` with the same rule group.
+
+```json
+{
+  "typeName": "UdmQuery", "id": "b0000000-0000-0000-0000-000000000001", "objectTypeName": "AwsIamUser",
+  "collapsed": false, "objectResultHidden": false, "groupProperties": null, "timeZoneId": null, "joins": [],
+  "properties": [
+    {"identifier": "EntityName", "queryId": "b0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "AwsEntityArn", "queryId": "b0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "AwsEntityTenant", "queryId": "b0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "AwsIamUserPasswordEnabled", "queryId": "b0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null}
+  ],
+  "ruleGroup": {"typeName": "UdmQueryRuleGroup", "id": "b0000000-0000-0000-0000-000000000002", "collapsed": false, "ignored": false, "not": false, "name": "", "operator": "And",
+    "rules": [
+      {"typeName": "UdmQueryRule", "id": "b0000000-0000-0000-0000-000000000003", "ignored": false, "not": false, "operator": "Equals", "propertyIdentifier": "PrincipalInactive", "values": [true]},
+      {"typeName": "UdmQueryRule", "id": "b0000000-0000-0000-0000-000000000004", "ignored": false, "not": false, "operator": "In", "propertyIdentifier": "EntityAttributes", "values": ["AwsAccessKeyEnabledUserAttribute"]}
+    ]}}
+```
+
+## Check 7 — Unused security groups
+
+`AwsEc2SecurityGroup` with **no attached resources** — a negated relation rule on
+`AwsEc2SecurityGroupResources` (empty inner rule group + `not: true`). Total via
+`udm_get_query_results_count` with the same rule group.
+
+```json
+{
+  "typeName": "UdmQuery", "id": "c0000000-0000-0000-0000-000000000001", "objectTypeName": "AwsEc2SecurityGroup",
+  "collapsed": false, "objectResultHidden": false, "groupProperties": null, "timeZoneId": null, "joins": [],
+  "properties": [
+    {"identifier": "EntityName", "queryId": "c0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "AwsEntityArn", "queryId": "c0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "AwsEntityTenant", "queryId": "c0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null},
+    {"identifier": "AwsEc2SecurityGroupDefaultSecurityGroup", "queryId": "c0000000-0000-0000-0000-000000000001", "sort": null, "startOfWeek": null, "transform": null}
+  ],
+  "ruleGroup": {"typeName": "UdmQueryRuleGroup", "id": "c0000000-0000-0000-0000-000000000002", "collapsed": false, "ignored": false, "not": false, "name": "", "operator": "And",
+    "rules": [
+      {"typeName": "UdmQueryRelationRule", "id": "c0000000-0000-0000-0000-000000000003", "ignored": false, "not": true, "relationPropertyIdentifier": "AwsEc2SecurityGroupResources",
+        "ruleGroup": {"typeName": "UdmQueryRuleGroup", "id": "c0000000-0000-0000-0000-000000000004", "collapsed": false, "ignored": false, "not": false, "name": "", "operator": "And", "rules": []}}
+    ]}}
+```
+
+Some results are default security groups (`AwsEc2SecurityGroupDefaultSecurityGroup = true`)
+— call those out for lock-down rather than deletion.
+
+---
+
 ## Property value references
 - `AwsIamRootUser.UserMfaEnabled` — boolean.
 - `IIdentity.EntityAttributes` (third-party): `VendorServiceIdentityAttribute`,
@@ -144,3 +215,8 @@ does not expose `NetworkDynamicAnalysisResourceNetworkEndpoints`.)
   `CrossTenant`, `External`, `Public`.
 - `IEntity.EntityNetworkAccessType`: `Internal`, `ExternalIndirect`, `ExternalDirect`.
 - `IDataEntity.DataEntityDataTypeCategories`: `Pci`, `Phi`, `Pii`, `Secrets`.
+- `IIdentity.PrincipalInactive` / `AwsIamUser.PrincipalInactive` — boolean (inactive).
+- `AwsIamUser.EntityAttributes` (credentials): `AwsAccessKeyEnabledUserAttribute`,
+  `CredentialsDisabledUserAttribute`; `AwsIamUserPasswordEnabled` — boolean.
+- `AwsEc2SecurityGroup.AwsEc2SecurityGroupResources` — relation to attached resources
+  (empty = unused); `AwsEc2SecurityGroupDefaultSecurityGroup` — boolean.

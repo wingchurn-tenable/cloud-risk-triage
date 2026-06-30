@@ -126,9 +126,14 @@ the deliverable — there is no separate highest-risk ranking in this edition:
 
 | Check | Match findings where Policy.Name / Category contains |
 |---|---|
-| Root user without MFA | "root", "MFA" |
-| 3rd-party identity + sensitive data | "third party" / "external" / "vendor" AND "sensitive"/"PII"/"PHI"/"PCI"/"secret" |
-| Publicly exposed resources | "public", "publicly exposed", "internet" |
-| Exposed secrets | "secret", "exposed secret" |
+| 1. Root user without MFA | "root", "MFA" |
+| 2. 3rd-party identity + sensitive data | "third party" / "external" / "vendor" AND "sensitive"/"PII"/"PHI"/"PCI"/"secret" |
+| 3. Publicly exposed resources | "public", "publicly exposed", "internet" |
+| 4. Exposed secrets | "secret", "exposed secret" |
+| 5. Inactive identities | "inactive" / "unused" + "identity"/"user"/"role" |
+| 6. Unused credentials | "unused"/"inactive" + "access key"/"credential"/"password" |
+| 7. Unused security groups | "unused"/"unattached" + "security group" |
+
+Checks 1–4 are "Address critical findings"; checks 5–7 are "Address low-hanging fruits".
 
 Always output each section even if the match set is empty (state "EMPTY — no findings").

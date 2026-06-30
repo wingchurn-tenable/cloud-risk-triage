@@ -5,20 +5,20 @@
     "email": "leongwc@gmail.com"
   },
   "metadata": {
-    "description": "Autonomous cloud security posture-sweep agents for Tenable Cloud Security — MCP edition and API-token (GraphQL) edition. Four checks: root MFA, third-party sensitive access, public exposure, exposed secrets.",
-    "version": "1.1.0"
+    "description": "Autonomous cloud security posture-sweep agents for Tenable Cloud Security — MCP edition and API-token (GraphQL) edition. Address critical findings (root MFA, third-party sensitive access, public exposure, exposed secrets) and low-hanging fruits (inactive identities, unused credentials, unused security groups).",
+    "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "cloud-risk-triage-agent",
       "source": "./plugins/cloud-risk-triage-agent",
-      "description": "MCP edition. Runs four posture checks — AWS root users without MFA, third-party identities with sensitive-data access, publicly exposed resources, and exposed secrets (each with a network-endpoint flag) — and writes a SOC-ready report. Requires the Tenable Cloud Security (tcs) MCP connector.",
+      "description": "MCP edition. Seven posture checks in two sections — Address critical findings (root MFA, third-party sensitive-data access, public exposure, exposed secrets) and Address low-hanging fruits (inactive identities, unused credentials, unused security groups) — written to a SOC-ready report. Requires the Tenable Cloud Security (tcs) MCP connector.",
       "keywords": ["cloud-security", "tenable", "posture", "cspm", "soc", "triage", "cnapp"]
     },
     {
       "name": "cloud-risk-triage-agent-api",
       "source": "./plugins/cloud-risk-triage-agent-api",
-      "description": "API-token edition (no MCP). Uses the Tenable Cloud Security public GraphQL API with a Bearer token to run the same four posture checks, mapped to Findings, and write a SOC-ready report.",
+      "description": "API-token edition (no MCP). Uses the Tenable Cloud Security public GraphQL API with a Bearer token to run the same seven posture checks (critical findings + low-hanging fruits), mapped to Findings, and write a SOC-ready report.",
       "keywords": ["cloud-security", "tenable", "graphql", "api-token", "posture", "soc", "cnapp"]
     }
   ]

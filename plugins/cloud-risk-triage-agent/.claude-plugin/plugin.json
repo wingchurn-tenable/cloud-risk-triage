@@ -1,7 +1,7 @@
 {
   "name": "cloud-risk-triage-agent",
-  "version": "0.3.0",
-  "description": "Autonomous cloud security posture sweep for Tenable Cloud Security. Runs four triage checks — AWS root users without MFA, third-party identities with sensitive-data access, publicly exposed resources, and exposed secrets (each with a network-endpoint flag) — and writes a SOC-ready report. Always lists every check, marking empty results.",
+  "version": "0.4.0",
+  "description": "Autonomous cloud security posture sweep for Tenable Cloud Security. Two sections: Address critical findings (root MFA, third-party sensitive-data access, public exposure, exposed secrets) and Address low-hanging fruits (inactive identities, unused credentials, unused security groups). Writes a SOC-ready report; always lists every check, marking empty results.",
   "author": {
     "name": "Wing",
     "email": "leongwc@gmail.com"

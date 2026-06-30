@@ -5,12 +5,18 @@ morning (or on demand) they run **four triage checks** and write a SOC-ready rep
 all from live data, nothing fabricated. Every check is always reported, even when it
 returns nothing (marked **EMPTY**).
 
-**The four checks:**
+**Address critical findings:**
 
 1. AWS root users without MFA
 2. Third-party identities with access to sensitive data
 3. Publicly exposed resources (flag: network endpoint identified)
 4. Exposed secrets (flag: network-reachable resource)
+
+**Address low-hanging fruits:**
+
+5. Inactive identities
+6. Unused credentials
+7. Unused security groups
 
 This repo ships **two editions** of the same agent. Install whichever matches how you
 connect to Tenable Cloud Security.
@@ -92,15 +98,23 @@ it, queries may return no rows.
 
 ## What each run does (both editions)
 
-Each run executes the four checks and writes a report with a summary count table, one
-section per check (with the requested flag columns), a remediation order, and
-verification notes. Every check section is **always output, marked "EMPTY — no
-findings" when there are none**:
+Each run executes seven checks across two sections and writes a report with summary
+count tables, one section per check (with the requested flag columns), a remediation
+order, and verification notes. Every check section is **always output, marked
+"EMPTY — no findings" when there are none**:
+
+**Address critical findings**
 
 1. AWS root users without MFA
 2. Third-party identities with access to sensitive data
 3. Publicly exposed resources (flag: network endpoint identified)
 4. Exposed secrets (flag: related resource has a network endpoint)
+
+**Address low-hanging fruits**
+
+5. Inactive identities
+6. Unused credentials
+7. Unused security groups
 
 In the API edition these are mapped onto finding policy categories rather than UDM
 attributes (see that plugin's README for the differences).
